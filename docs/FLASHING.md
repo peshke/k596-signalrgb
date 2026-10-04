@@ -8,9 +8,11 @@ using Redragon's own flashing code (write + verify + reboot). You do this at you
 * Redragon K596 Vishnu, **MosArt version**: USB ID `062A:8519` when wired, and the official
   software shows `FW: 1.04`. Check the ID in Device Manager -> keyboard -> Details -> Hardware Ids
   (`HID\VID_062A&PID_8519`).
-* Official **Redragon Gaming Software K596RGB 1.0.0.3** (installer
+* Official **Redragon Gaming Software K596RGB 1.0.0.3**: <https://redragonshop.com/pages/software> ->
+  search `vishnu` -> **VISHNU K596 Pro Wireless Keyboard** -> **Software (Dual Mode)**
+  ([direct link](https://cdn.shopify.com/s/files/1/0012/4957/4961/files/Redragon_K596RGB_Keyboard_Software_99614b56-7986-4aa2-b062-beae835d5d03.zip?v=1727257837)), installer
   `Redragon Gaming Software K596RGB 1.0.0.3 Setup.exe`, SHA-256
-  `ff41aff036a98141e24d1f7248ec22040e8787ab89a4f7b942638fb8d28660db`), installed.
+  `ff41aff036a98141e24d1f7248ec22040e8787ab89a4f7b942638fb8d28660db`, installed.
 * Python 3 (only for building the flashing programs).
 
 ## 1. Build the flashing programs

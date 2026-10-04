@@ -24,6 +24,11 @@ with:
 * USB ID `062A:8519` when wired (Device Manager -> keyboard -> Details -> Hardware Ids)
 * Official software `Redragon Gaming Software K596RGB 1.0.0.3`, showing `FW: 1.04`
 
+The official software is on Redragon's software page <https://redragonshop.com/pages/software>:
+search for `vishnu`, open **VISHNU K596 Pro Wireless Keyboard** and download **Software (Dual Mode)**.
+Direct link: <https://cdn.shopify.com/s/files/1/0012/4957/4961/files/Redragon_K596RGB_Keyboard_Software_99614b56-7986-4aa2-b062-beae835d5d03.zip?v=1727257837>
+The zip contains `Redragon Gaming Software K596RGB 1.0.0.3 Setup.exe`. It is not included in this repository.
+
 ## SignalRGB plugin
 
 1. Close the Redragon software (including the tray icon).
