@@ -63,6 +63,7 @@ official software, nothing from Redragon is redistributed here. Read
 | `tools/patch_software.py` | builds the flashing programs (original 1.04 / patched 1.05) from your official exe |
 | `tools/k596_tool.py` | diagnostics: settings, dumps, direct-mode fill / rainbow test |
 | `docs/PROTOCOL.md` | USB protocol, commands, reports, timing, LED map |
+| `captures/` | cleaned USB capture of the official software (Wireshark) + decoded request list |
 | `docs/FIRMWARE.md` | firmware layout, checksums, patch details, official software internals |
 | `docs/FLASHING.md` | flashing guide |
 | `docs/WIRELESS.md` | notes for 2.4 GHz support |

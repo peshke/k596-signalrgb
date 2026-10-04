@@ -1,0 +1,456 @@
+# time(s)  request    type    report  length  first data bytes (decoded from official-app-esc-red-green.pcapng)
+   0.036  SET_REPORT output  id=0x01 len=2    01 00
+   0.044  SET_REPORT output  id=0x01 len=2    01 00
+   0.163  SET_REPORT output  id=0x08 len=64   08 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   0.178  SET_REPORT output  id=0x08 len=64   08 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   0.193  GET_REPORT feature id=0x10 len=8    
+   0.211  GET_REPORT feature id=0x11 len=257  
+   0.223  GET_REPORT feature id=0x13 len=366  
+   0.238  GET_REPORT feature id=0x12 len=109  
+   0.258  SET_REPORT output  id=0x08 len=64   08 23 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   0.273  SET_REPORT output  id=0x08 len=64   08 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   0.291  GET_REPORT feature id=0x14 len=25   
+   0.303  GET_REPORT feature id=0x15 len=107  
+   0.321  SET_REPORT output  id=0x08 len=64   08 03 80 01 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.332  SET_REPORT output  id=0x08 len=64   08 03 bb 01 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.347  SET_REPORT output  id=0x08 len=64   08 03 f6 01 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.363  SET_REPORT output  id=0x08 len=64   08 03 31 02 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.383  SET_REPORT output  id=0x08 len=64   08 03 6c 02 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.403  SET_REPORT output  id=0x08 len=64   08 03 a7 02 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.413  SET_REPORT output  id=0x08 len=64   08 03 e2 02 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.428  SET_REPORT output  id=0x08 len=64   08 03 1d 03 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.443  SET_REPORT output  id=0x08 len=64   08 03 58 03 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.458  SET_REPORT output  id=0x08 len=64   08 03 93 03 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.473  SET_REPORT output  id=0x08 len=64   08 03 ce 03 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.488  SET_REPORT output  id=0x08 len=64   08 03 09 04 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.508  SET_REPORT output  id=0x08 len=64   08 03 44 04 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.523  SET_REPORT output  id=0x08 len=64   08 03 7f 04 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.538  SET_REPORT output  id=0x08 len=64   08 03 ba 04 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.552  SET_REPORT output  id=0x08 len=64   08 03 f5 04 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.568  SET_REPORT output  id=0x08 len=64   08 03 30 05 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.583  SET_REPORT output  id=0x08 len=64   08 03 6b 05 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.602  SET_REPORT output  id=0x08 len=64   08 03 a6 05 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.613  SET_REPORT output  id=0x08 len=64   08 03 e1 05 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.632  SET_REPORT output  id=0x08 len=64   08 03 1c 06 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.648  SET_REPORT output  id=0x08 len=64   08 03 57 06 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.660  SET_REPORT output  id=0x08 len=64   08 03 92 06 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.676  SET_REPORT output  id=0x08 len=64   08 03 cd 06 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.692  SET_REPORT output  id=0x08 len=64   08 03 08 07 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.707  SET_REPORT output  id=0x08 len=64   08 03 43 07 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.722  SET_REPORT output  id=0x08 len=64   08 03 7e 07 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.739  SET_REPORT output  id=0x08 len=64   08 03 b9 07 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.754  SET_REPORT output  id=0x08 len=64   08 03 f4 07 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.770  SET_REPORT output  id=0x08 len=64   08 03 2f 08 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.786  SET_REPORT output  id=0x08 len=64   08 03 6a 08 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.802  SET_REPORT output  id=0x08 len=64   08 03 a5 08 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.818  SET_REPORT output  id=0x08 len=64   08 03 e0 08 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.834  SET_REPORT output  id=0x08 len=64   08 03 1b 09 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.850  SET_REPORT output  id=0x08 len=64   08 03 56 09 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.866  SET_REPORT output  id=0x08 len=64   08 03 91 09 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.882  SET_REPORT output  id=0x08 len=64   08 03 cc 09 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.898  SET_REPORT output  id=0x08 len=64   08 03 07 0a 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.914  SET_REPORT output  id=0x08 len=64   08 03 42 0a 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.929  SET_REPORT output  id=0x08 len=64   08 03 7d 0a 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.945  SET_REPORT output  id=0x08 len=64   08 03 b8 0a 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.961  SET_REPORT output  id=0x08 len=64   08 03 f3 0a 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.977  SET_REPORT output  id=0x08 len=64   08 03 2e 0b 3b 00 00 00 00 00 00 00 00 00 00 00
+   0.993  SET_REPORT output  id=0x08 len=64   08 03 69 0b 17 00 00 00 00 00 00 00 00 00 00 00
+   1.009  GET_REPORT feature id=0x13 len=366  
+   1.025  SET_REPORT output  id=0x08 len=64   08 21 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   1.041  SET_REPORT output  id=0x08 len=64   08 05 00 00 18 00 00 05 00 01 07 05 00 00 02 00
+   1.057  SET_REPORT output  id=0x08 len=64   08 22 00 00 02 00 00 00 00 00 00 00 00 00 00 00
+   1.067  GET_REPORT feature id=0x13 len=366  
+   1.081  SET_REPORT output  id=0x08 len=64   08 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   6.099  GET_REPORT feature id=0x13 len=366  
+   6.109  SET_REPORT output  id=0x08 len=64   08 21 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   6.122  SET_REPORT output  id=0x08 len=64   08 05 00 00 18 00 00 05 00 01 07 05 00 00 02 00
+   6.138  SET_REPORT output  id=0x08 len=64   08 22 00 00 02 00 00 00 00 00 00 00 00 00 00 00
+   6.153  GET_REPORT feature id=0x13 len=366  
+   6.169  SET_REPORT output  id=0x08 len=64   08 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   6.220  GET_REPORT feature id=0x13 len=366  
+   6.282  GET_REPORT feature id=0x13 len=366  
+   6.347  GET_REPORT feature id=0x13 len=366  
+   6.394  GET_REPORT feature id=0x13 len=366  
+   6.458  GET_REPORT feature id=0x13 len=366  
+   6.520  GET_REPORT feature id=0x13 len=366  
+   6.584  GET_REPORT feature id=0x13 len=366  
+   6.648  GET_REPORT feature id=0x13 len=366  
+   6.712  GET_REPORT feature id=0x13 len=366  
+   6.776  GET_REPORT feature id=0x13 len=366  
+   6.839  GET_REPORT feature id=0x13 len=366  
+   6.903  GET_REPORT feature id=0x13 len=366  
+   6.967  GET_REPORT feature id=0x13 len=366  
+   7.034  GET_REPORT feature id=0x13 len=366  
+   7.095  GET_REPORT feature id=0x13 len=366  
+   7.160  GET_REPORT feature id=0x13 len=366  
+   7.223  GET_REPORT feature id=0x13 len=366  
+   7.288  GET_REPORT feature id=0x13 len=366  
+   7.352  GET_REPORT feature id=0x13 len=366  
+   7.415  GET_REPORT feature id=0x13 len=366  
+   7.484  GET_REPORT feature id=0x13 len=366  
+   7.542  GET_REPORT feature id=0x13 len=366  
+   7.606  GET_REPORT feature id=0x13 len=366  
+   7.671  GET_REPORT feature id=0x13 len=366  
+   7.735  GET_REPORT feature id=0x13 len=366  
+   7.799  GET_REPORT feature id=0x13 len=366  
+   7.862  GET_REPORT feature id=0x13 len=366  
+   7.911  GET_REPORT feature id=0x13 len=366  
+   7.974  GET_REPORT feature id=0x13 len=366  
+   8.038  GET_REPORT feature id=0x13 len=366  
+   8.103  GET_REPORT feature id=0x13 len=366  
+   8.167  GET_REPORT feature id=0x13 len=366  
+   8.358  GET_REPORT feature id=0x13 len=366  
+   8.423  GET_REPORT feature id=0x13 len=366  
+   8.500  GET_REPORT feature id=0x13 len=366  
+   8.553  GET_REPORT feature id=0x13 len=366  
+   8.615  GET_REPORT feature id=0x13 len=366  
+   8.679  GET_REPORT feature id=0x13 len=366  
+   8.743  GET_REPORT feature id=0x13 len=366  
+   8.807  GET_REPORT feature id=0x13 len=366  
+   8.870  GET_REPORT feature id=0x13 len=366  
+   8.935  GET_REPORT feature id=0x13 len=366  
+   9.001  GET_REPORT feature id=0x13 len=366  
+   9.064  GET_REPORT feature id=0x13 len=366  
+   9.128  GET_REPORT feature id=0x13 len=366  
+   9.177  GET_REPORT feature id=0x13 len=366  
+   9.241  GET_REPORT feature id=0x13 len=366  
+   9.305  GET_REPORT feature id=0x13 len=366  
+   9.370  GET_REPORT feature id=0x13 len=366  
+   9.435  GET_REPORT feature id=0x13 len=366  
+   9.498  GET_REPORT feature id=0x13 len=366  
+   9.563  GET_REPORT feature id=0x13 len=366  
+   9.627  GET_REPORT feature id=0x13 len=366  
+   9.692  GET_REPORT feature id=0x13 len=366  
+   9.755  GET_REPORT feature id=0x13 len=366  
+   9.820  GET_REPORT feature id=0x13 len=366  
+   9.884  GET_REPORT feature id=0x13 len=366  
+   9.949  GET_REPORT feature id=0x13 len=366  
+  10.012  GET_REPORT feature id=0x13 len=366  
+  10.076  GET_REPORT feature id=0x13 len=366  
+  10.140  GET_REPORT feature id=0x13 len=366  
+  10.206  GET_REPORT feature id=0x13 len=366  
+  10.269  GET_REPORT feature id=0x13 len=366  
+  10.317  GET_REPORT feature id=0x13 len=366  
+  10.382  GET_REPORT feature id=0x13 len=366  
+  10.447  GET_REPORT feature id=0x13 len=366  
+  10.510  GET_REPORT feature id=0x13 len=366  
+  10.576  GET_REPORT feature id=0x13 len=366  
+  10.640  GET_REPORT feature id=0x13 len=366  
+  10.703  GET_REPORT feature id=0x13 len=366  
+  10.766  GET_REPORT feature id=0x13 len=366  
+  10.832  GET_REPORT feature id=0x13 len=366  
+  10.879  GET_REPORT feature id=0x13 len=366  
+  10.943  GET_REPORT feature id=0x13 len=366  
+  11.008  GET_REPORT feature id=0x13 len=366  
+  11.073  GET_REPORT feature id=0x13 len=366  
+  11.136  GET_REPORT feature id=0x13 len=366  
+  11.201  GET_REPORT feature id=0x13 len=366  
+  11.264  GET_REPORT feature id=0x13 len=366  
+  11.328  GET_REPORT feature id=0x13 len=366  
+  11.392  GET_REPORT feature id=0x13 len=366  
+  11.457  GET_REPORT feature id=0x13 len=366  
+  11.520  GET_REPORT feature id=0x13 len=366  
+  11.585  GET_REPORT feature id=0x13 len=366  
+  11.649  GET_REPORT feature id=0x13 len=366  
+  11.715  GET_REPORT feature id=0x13 len=366  
+  11.778  GET_REPORT feature id=0x13 len=366  
+  11.843  GET_REPORT feature id=0x13 len=366  
+  11.906  GET_REPORT feature id=0x13 len=366  
+  11.971  GET_REPORT feature id=0x13 len=366  
+  12.036  GET_REPORT feature id=0x13 len=366  
+  12.083  GET_REPORT feature id=0x13 len=366  
+  12.146  GET_REPORT feature id=0x13 len=366  
+  12.212  GET_REPORT feature id=0x13 len=366  
+  12.276  GET_REPORT feature id=0x13 len=366  
+  12.341  GET_REPORT feature id=0x13 len=366  
+  12.404  GET_REPORT feature id=0x13 len=366  
+  12.468  GET_REPORT feature id=0x13 len=366  
+  12.532  GET_REPORT feature id=0x13 len=366  
+  12.597  GET_REPORT feature id=0x13 len=366  
+  12.644  GET_REPORT feature id=0x13 len=366  
+  12.709  GET_REPORT feature id=0x13 len=366  
+  12.773  GET_REPORT feature id=0x13 len=366  
+  12.838  GET_REPORT feature id=0x13 len=366  
+  12.902  GET_REPORT feature id=0x13 len=366  
+  12.968  GET_REPORT feature id=0x13 len=366  
+  13.032  GET_REPORT feature id=0x13 len=366  
+  13.095  GET_REPORT feature id=0x13 len=366  
+  13.159  GET_REPORT feature id=0x13 len=366  
+  13.223  GET_REPORT feature id=0x13 len=366  
+  13.286  GET_REPORT feature id=0x13 len=366  
+  13.350  GET_REPORT feature id=0x13 len=366  
+  13.415  GET_REPORT feature id=0x13 len=366  
+  13.479  GET_REPORT feature id=0x13 len=366  
+  13.544  GET_REPORT feature id=0x13 len=366  
+  13.608  GET_REPORT feature id=0x13 len=366  
+  13.672  GET_REPORT feature id=0x13 len=366  
+  13.736  GET_REPORT feature id=0x13 len=366  
+  13.800  GET_REPORT feature id=0x13 len=366  
+  13.849  GET_REPORT feature id=0x13 len=366  
+  13.911  GET_REPORT feature id=0x13 len=366  
+  13.975  GET_REPORT feature id=0x13 len=366  
+  14.040  GET_REPORT feature id=0x13 len=366  
+  14.105  GET_REPORT feature id=0x13 len=366  
+  14.169  GET_REPORT feature id=0x13 len=366  
+  14.234  GET_REPORT feature id=0x13 len=366  
+  14.300  GET_REPORT feature id=0x13 len=366  
+  14.364  GET_REPORT feature id=0x13 len=366  
+  14.429  GET_REPORT feature id=0x13 len=366  
+  14.492  GET_REPORT feature id=0x13 len=366  
+  14.557  GET_REPORT feature id=0x13 len=366  
+  14.622  GET_REPORT feature id=0x13 len=366  
+  14.687  GET_REPORT feature id=0x13 len=366  
+  14.751  GET_REPORT feature id=0x13 len=366  
+  14.816  GET_REPORT feature id=0x13 len=366  
+  14.880  GET_REPORT feature id=0x13 len=366  
+  14.945  GET_REPORT feature id=0x13 len=366  
+  15.007  GET_REPORT feature id=0x13 len=366  
+  15.070  GET_REPORT feature id=0x13 len=366  
+  15.134  GET_REPORT feature id=0x13 len=366  
+  15.198  GET_REPORT feature id=0x13 len=366  
+  15.263  GET_REPORT feature id=0x13 len=366  
+  15.326  GET_REPORT feature id=0x13 len=366  
+  15.392  GET_REPORT feature id=0x13 len=366  
+  15.455  GET_REPORT feature id=0x13 len=366  
+  15.519  GET_REPORT feature id=0x13 len=366  
+  15.584  GET_REPORT feature id=0x13 len=366  
+  15.649  GET_REPORT feature id=0x13 len=366  
+  15.714  GET_REPORT feature id=0x13 len=366  
+  15.778  GET_REPORT feature id=0x13 len=366  
+  15.903  SET_REPORT output  id=0x08 len=64   08 21 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  15.907  SET_REPORT feature id=0x20 len=105  20 00 00 00 00 00 00 00 00 00 08 00 00 00 00 00
+  15.921  GET_REPORT feature id=0x16 len=2    
+  15.937  SET_REPORT output  id=0x08 len=64   08 22 00 00 02 00 00 00 00 00 00 00 00 00 00 00
+  15.953  GET_REPORT feature id=0x13 len=366  
+  16.018  GET_REPORT feature id=0x13 len=366  
+  16.083  GET_REPORT feature id=0x13 len=366  
+  16.148  GET_REPORT feature id=0x13 len=366  
+  16.211  GET_REPORT feature id=0x13 len=366  
+  16.278  GET_REPORT feature id=0x13 len=366  
+  16.339  GET_REPORT feature id=0x13 len=366  
+  16.404  GET_REPORT feature id=0x13 len=366  
+  16.467  GET_REPORT feature id=0x13 len=366  
+  16.530  GET_REPORT feature id=0x13 len=366  
+  16.594  GET_REPORT feature id=0x13 len=366  
+  16.657  GET_REPORT feature id=0x13 len=366  
+  16.717  GET_REPORT feature id=0x13 len=366  
+  16.785  GET_REPORT feature id=0x13 len=366  
+  16.850  GET_REPORT feature id=0x13 len=366  
+  16.916  GET_REPORT feature id=0x13 len=366  
+  17.041  SET_REPORT output  id=0x08 len=64   08 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  17.065  SET_REPORT output  id=0x08 len=64   08 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  17.074  SET_REPORT output  id=0x08 len=64   08 05 00 01 3b 00 00 00 00 00 00 00 00 00 08 00
+  17.090  SET_REPORT output  id=0x08 len=64   08 05 3b 01 2f 00 00 00 00 00 00 00 00 00 00 00
+  17.106  SET_REPORT output  id=0x08 len=64   08 07 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  17.164  GET_REPORT feature id=0x13 len=366  
+  17.170  SET_REPORT output  id=0x08 len=64   08 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  17.218  GET_REPORT feature id=0x13 len=366  
+  17.283  GET_REPORT feature id=0x13 len=366  
+  17.363  GET_REPORT feature id=0x13 len=366  
+  17.410  GET_REPORT feature id=0x13 len=366  
+  17.475  GET_REPORT feature id=0x13 len=366  
+  17.538  GET_REPORT feature id=0x13 len=366  
+  17.602  GET_REPORT feature id=0x13 len=366  
+  17.667  GET_REPORT feature id=0x13 len=366  
+  17.731  GET_REPORT feature id=0x13 len=366  
+  17.795  GET_REPORT feature id=0x13 len=366  
+  17.859  GET_REPORT feature id=0x13 len=366  
+  17.923  GET_REPORT feature id=0x13 len=366  
+  17.987  GET_REPORT feature id=0x13 len=366  
+  18.035  GET_REPORT feature id=0x13 len=366  
+  18.100  GET_REPORT feature id=0x13 len=366  
+  18.164  GET_REPORT feature id=0x13 len=366  
+  18.229  GET_REPORT feature id=0x13 len=366  
+  18.294  GET_REPORT feature id=0x13 len=366  
+  18.359  GET_REPORT feature id=0x13 len=366  
+  18.421  GET_REPORT feature id=0x13 len=366  
+  18.486  GET_REPORT feature id=0x13 len=366  
+  18.551  GET_REPORT feature id=0x13 len=366  
+  18.598  GET_REPORT feature id=0x13 len=366  
+  18.663  GET_REPORT feature id=0x13 len=366  
+  18.727  GET_REPORT feature id=0x13 len=366  
+  18.792  GET_REPORT feature id=0x13 len=366  
+  18.857  GET_REPORT feature id=0x13 len=366  
+  18.922  GET_REPORT feature id=0x13 len=366  
+  18.985  GET_REPORT feature id=0x13 len=366  
+  19.048  GET_REPORT feature id=0x13 len=366  
+  19.113  GET_REPORT feature id=0x13 len=366  
+  19.161  GET_REPORT feature id=0x13 len=366  
+  19.226  GET_REPORT feature id=0x13 len=366  
+  19.290  GET_REPORT feature id=0x13 len=366  
+  19.355  GET_REPORT feature id=0x13 len=366  
+  19.418  GET_REPORT feature id=0x13 len=366  
+  19.482  GET_REPORT feature id=0x13 len=366  
+  19.546  GET_REPORT feature id=0x13 len=366  
+  19.608  GET_REPORT feature id=0x13 len=366  
+  19.671  GET_REPORT feature id=0x13 len=366  
+  19.726  GET_REPORT feature id=0x13 len=366  
+  19.788  GET_REPORT feature id=0x13 len=366  
+  19.851  GET_REPORT feature id=0x13 len=366  
+  19.919  GET_REPORT feature id=0x13 len=366  
+  19.976  GET_REPORT feature id=0x13 len=366  
+  20.036  GET_REPORT feature id=0x13 len=366  
+  20.102  GET_REPORT feature id=0x13 len=366  
+  20.161  GET_REPORT feature id=0x13 len=366  
+  20.223  GET_REPORT feature id=0x13 len=366  
+  20.288  GET_REPORT feature id=0x13 len=366  
+  20.348  GET_REPORT feature id=0x13 len=366  
+  20.419  GET_REPORT feature id=0x13 len=366  
+  20.484  GET_REPORT feature id=0x13 len=366  
+  20.535  GET_REPORT feature id=0x13 len=366  
+  20.599  GET_REPORT feature id=0x13 len=366  
+  20.668  GET_REPORT feature id=0x13 len=366  
+  20.734  GET_REPORT feature id=0x13 len=366  
+  20.799  GET_REPORT feature id=0x13 len=366  
+  20.863  GET_REPORT feature id=0x13 len=366  
+  20.912  GET_REPORT feature id=0x13 len=366  
+  20.976  GET_REPORT feature id=0x13 len=366  
+  21.041  GET_REPORT feature id=0x13 len=366  
+  21.104  GET_REPORT feature id=0x13 len=366  
+  21.168  GET_REPORT feature id=0x13 len=366  
+  21.233  GET_REPORT feature id=0x13 len=366  
+  21.297  GET_REPORT feature id=0x13 len=366  
+  21.360  GET_REPORT feature id=0x13 len=366  
+  21.424  GET_REPORT feature id=0x13 len=366  
+  21.474  GET_REPORT feature id=0x13 len=366  
+  21.536  GET_REPORT feature id=0x13 len=366  
+  21.600  GET_REPORT feature id=0x13 len=366  
+  21.661  GET_REPORT feature id=0x13 len=366  
+  21.735  GET_REPORT feature id=0x13 len=366  
+  21.787  GET_REPORT feature id=0x13 len=366  
+  21.852  GET_REPORT feature id=0x13 len=366  
+  21.912  GET_REPORT feature id=0x13 len=366  
+  21.974  GET_REPORT feature id=0x13 len=366  
+  22.037  GET_REPORT feature id=0x13 len=366  
+  22.101  GET_REPORT feature id=0x13 len=366  
+  22.169  GET_REPORT feature id=0x13 len=366  
+  22.224  GET_REPORT feature id=0x13 len=366  
+  22.285  GET_REPORT feature id=0x13 len=366  
+  22.350  GET_REPORT feature id=0x13 len=366  
+  22.414  GET_REPORT feature id=0x13 len=366  
+  22.478  GET_REPORT feature id=0x13 len=366  
+  22.535  GET_REPORT feature id=0x13 len=366  
+  22.601  GET_REPORT feature id=0x13 len=366  
+  22.667  GET_REPORT feature id=0x13 len=366  
+  22.734  GET_REPORT feature id=0x13 len=366  
+  22.787  GET_REPORT feature id=0x13 len=366  
+  22.851  GET_REPORT feature id=0x13 len=366  
+  22.912  GET_REPORT feature id=0x13 len=366  
+  22.984  GET_REPORT feature id=0x13 len=366  
+  23.035  GET_REPORT feature id=0x13 len=366  
+  23.102  GET_REPORT feature id=0x13 len=366  
+  23.167  GET_REPORT feature id=0x13 len=366  
+  23.230  GET_REPORT feature id=0x13 len=366  
+  23.295  GET_REPORT feature id=0x13 len=366  
+  23.358  GET_REPORT feature id=0x13 len=366  
+  23.422  GET_REPORT feature id=0x13 len=366  
+  23.485  GET_REPORT feature id=0x13 len=366  
+  23.550  GET_REPORT feature id=0x13 len=366  
+  23.614  GET_REPORT feature id=0x13 len=366  
+  23.662  GET_REPORT feature id=0x13 len=366  
+  23.728  GET_REPORT feature id=0x13 len=366  
+  23.789  GET_REPORT feature id=0x13 len=366  
+  23.854  GET_REPORT feature id=0x13 len=366  
+  23.918  GET_REPORT feature id=0x13 len=366  
+  24.054  GET_REPORT feature id=0x13 len=366  
+  24.112  GET_REPORT feature id=0x13 len=366  
+  24.175  GET_REPORT feature id=0x13 len=366  
+  24.222  GET_REPORT feature id=0x13 len=366  
+  24.287  GET_REPORT feature id=0x13 len=366  
+  24.350  GET_REPORT feature id=0x13 len=366  
+  24.414  GET_REPORT feature id=0x13 len=366  
+  24.477  GET_REPORT feature id=0x13 len=366  
+  24.542  GET_REPORT feature id=0x13 len=366  
+  24.605  GET_REPORT feature id=0x13 len=366  
+  24.670  GET_REPORT feature id=0x13 len=366  
+  24.733  GET_REPORT feature id=0x13 len=366  
+  24.857  SET_REPORT output  id=0x08 len=64   08 21 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  24.861  SET_REPORT feature id=0x20 len=105  20 00 00 00 00 00 00 00 00 00 08 00 00 00 00 00
+  24.864  GET_REPORT feature id=0x16 len=2    
+  24.878  SET_REPORT output  id=0x08 len=64   08 22 00 00 02 00 00 00 00 00 00 00 00 00 00 00
+  24.909  GET_REPORT feature id=0x13 len=366  
+  24.975  GET_REPORT feature id=0x13 len=366  
+  25.039  GET_REPORT feature id=0x13 len=366  
+  25.107  GET_REPORT feature id=0x13 len=366  
+  25.166  GET_REPORT feature id=0x13 len=366  
+  25.230  GET_REPORT feature id=0x13 len=366  
+  25.372  GET_REPORT feature id=0x13 len=366  
+  25.437  GET_REPORT feature id=0x13 len=366  
+  25.502  GET_REPORT feature id=0x13 len=366  
+  25.566  GET_REPORT feature id=0x13 len=366  
+  25.630  GET_REPORT feature id=0x13 len=366  
+  25.694  GET_REPORT feature id=0x13 len=366  
+  25.757  GET_REPORT feature id=0x13 len=366  
+  25.820  GET_REPORT feature id=0x13 len=366  
+  25.883  GET_REPORT feature id=0x13 len=366  
+  25.947  GET_REPORT feature id=0x13 len=366  
+  26.012  GET_REPORT feature id=0x13 len=366  
+  26.132  SET_REPORT output  id=0x08 len=64   08 21 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  26.145  SET_REPORT feature id=0x20 len=105  20 00 00 00 00 00 00 00 00 00 08 00 00 00 00 00
+  26.161  GET_REPORT feature id=0x16 len=2    
+  26.186  SET_REPORT output  id=0x08 len=64   08 22 00 00 02 00 00 00 00 00 00 00 00 00 00 00
+  26.196  GET_REPORT feature id=0x13 len=366  
+  26.267  GET_REPORT feature id=0x13 len=366  
+  26.330  GET_REPORT feature id=0x13 len=366  
+  26.487  GET_REPORT feature id=0x13 len=366  
+  26.554  GET_REPORT feature id=0x13 len=366  
+  26.618  GET_REPORT feature id=0x13 len=366  
+  26.682  GET_REPORT feature id=0x13 len=366  
+  26.745  GET_REPORT feature id=0x13 len=366  
+  26.895  SET_REPORT output  id=0x08 len=64   08 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  26.913  SET_REPORT output  id=0x08 len=64   08 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  26.920  SET_REPORT output  id=0x08 len=64   08 05 00 01 3b 00 00 00 00 00 00 00 00 00 08 00
+  26.936  SET_REPORT output  id=0x08 len=64   08 05 3b 01 2f 00 00 00 00 00 00 00 00 00 00 00
+  26.952  SET_REPORT output  id=0x08 len=64   08 07 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  27.010  GET_REPORT feature id=0x13 len=366  
+  27.016  SET_REPORT output  id=0x08 len=64   08 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  27.066  GET_REPORT feature id=0x13 len=366  
+  27.117  GET_REPORT feature id=0x13 len=366  
+  27.179  GET_REPORT feature id=0x13 len=366  
+  27.242  GET_REPORT feature id=0x13 len=366  
+  27.306  GET_REPORT feature id=0x13 len=366  
+  27.370  GET_REPORT feature id=0x13 len=366  
+  27.434  GET_REPORT feature id=0x13 len=366  
+  27.499  GET_REPORT feature id=0x13 len=366  
+  27.562  GET_REPORT feature id=0x13 len=366  
+  27.625  GET_REPORT feature id=0x13 len=366  
+  27.691  GET_REPORT feature id=0x13 len=366  
+  27.754  GET_REPORT feature id=0x13 len=366  
+  27.818  GET_REPORT feature id=0x13 len=366  
+  27.881  GET_REPORT feature id=0x13 len=366  
+  27.945  GET_REPORT feature id=0x13 len=366  
+  28.009  GET_REPORT feature id=0x13 len=366  
+  28.073  GET_REPORT feature id=0x13 len=366  
+  28.138  GET_REPORT feature id=0x13 len=366  
+  28.202  GET_REPORT feature id=0x13 len=366  
+  28.266  GET_REPORT feature id=0x13 len=366  
+  28.331  GET_REPORT feature id=0x13 len=366  
+  28.380  GET_REPORT feature id=0x13 len=366  
+  28.444  GET_REPORT feature id=0x13 len=366  
+  28.509  GET_REPORT feature id=0x13 len=366  
+  28.572  GET_REPORT feature id=0x13 len=366  
+  28.636  GET_REPORT feature id=0x13 len=366  
+  28.700  GET_REPORT feature id=0x13 len=366  
+  28.763  GET_REPORT feature id=0x13 len=366  
+  28.827  GET_REPORT feature id=0x13 len=366  
+  28.890  GET_REPORT feature id=0x13 len=366  
+  28.955  GET_REPORT feature id=0x13 len=366  
+  29.018  GET_REPORT feature id=0x13 len=366  
+  29.083  GET_REPORT feature id=0x13 len=366  
+  29.148  GET_REPORT feature id=0x13 len=366  
+  29.211  GET_REPORT feature id=0x13 len=366  
+  29.275  GET_REPORT feature id=0x13 len=366  
+  29.339  GET_REPORT feature id=0x13 len=366  
+  29.402  GET_REPORT feature id=0x13 len=366  
+  29.467  GET_REPORT feature id=0x13 len=366  
+  29.530  GET_REPORT feature id=0x13 len=366  
+  29.594  GET_REPORT feature id=0x13 len=366  
+  29.659  GET_REPORT feature id=0x13 len=366  
+  29.722  GET_REPORT feature id=0x13 len=366  
+  29.770  GET_REPORT feature id=0x13 len=366  
+  29.834  GET_REPORT feature id=0x13 len=366  
+  29.899  GET_REPORT feature id=0x13 len=366  
+  29.963  GET_REPORT feature id=0x13 len=366  
+  30.027  GET_REPORT feature id=0x13 len=366  
+  30.092  GET_REPORT feature id=0x13 len=366  
+  30.156  GET_REPORT feature id=0x13 len=366  
