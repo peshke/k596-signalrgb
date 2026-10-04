@@ -1,0 +1,8 @@
+# never commit Redragon binaries or firmware
+*.exe
+*.hex
+*.bin
+
+# tool output
+k596_*.json
+__pycache__/
