@@ -6,8 +6,9 @@ copy of "Redragon Gaming Software.exe" and this script patches it locally.
 
 Outputs (written next to the input file):
   K596 FLASH original 1.04.exe   original firmware 1.04, UPDATE always enabled (dry run / restore)
-  K596 FLASH patch 1.06.exe      firmware 1.06 = 1.04 + direct-mode fixes (no white held keys,
-                                 working lock indicators), UPDATE always enabled
+  K596 FLASH patch 1.07.exe      firmware 1.07 = 1.04 + direct-mode fixes (no white held keys,
+                                 working lock indicators) + per-LED command no longer triggers a
+                                 full refresh (much faster per-key updates), UPDATE always enabled
 
 Usage:
   python patch_software.py "C:\\Redragon Gaming Software\\Redragon Gaming Software.exe"
@@ -19,7 +20,7 @@ from pathlib import Path
 SRC_SHA256 = "25e3053139b19cf4c3e9b49266a1033c1f4a1d553671f8d854183df3bb78347f"
 OUT_SHA256 = {
     "K596 FLASH original 1.04.exe": "20e2f59c1de4067a95150f16b0e747605531c8543d8535091fc0e487b2938926",
-    "K596 FLASH patch 1.06.exe": "95b2ee29c445d7138cb4ce632bb4e17265eeb893554ff22b85c383dfa9cf6e5c",
+    "K596 FLASH patch 1.07.exe": "97e8680669fa8c377ce6fdc2ec605393a0b09e471383b4426bf5d33c826b5663",
 }
 
 IMG_OFF = 0x2A6518   # file offset of the embedded firmware buffer (CPU address 0x0000-0xE97F)
@@ -33,6 +34,8 @@ def build_image(orig: bytes, version: int, fix: bool) -> bytearray:
     assert img[0x803C:0x8041] == b"01.04" and img[0xDFBD:0xDFBF] == b"\x04\x01"
     assert img[0xCB5B:0xCB5D] == b"\xD0\x0D"
     assert img[0xB0D5:0xB0D7] == b"\xF0\x1B" and img[0xB105:0xB107] == b"\xD0\x0C"
+    assert img[0x9967:0x996A] == b"\x20\xB0\xAD" and img[0x98AF:0x98B2] == b"\x4C\x67\x99"
+    assert img[0x9915:0x9919] == b"\xE8\xE8\x80\x4E" and set(img[0x8048:0x8058]) == {0xFF}
     if version != 0x0104 or fix:
         img[0x803C:0x8041] = f"{version >> 8:02X}.{version & 0xFF:02X}".encode()  # version text
         img[0xDFBD:0xDFBF] = version.to_bytes(2, "little")                    # USB bcdDevice
@@ -40,6 +43,13 @@ def build_image(orig: bytes, version: int, fix: bool) -> bytearray:
             img[0xCB5C] = 0x2C               # BNE $CB6A (paint held keys white) -> BNE $CB89 (RTS)
             img[0xB0D5] = 0x80               # BEQ $B0F2 -> BRA: keep real lock state for the indicators
             img[0xB105:0xB107] = b"\xEA\xEA"  # BNE $B113 -> NOP NOP: indicators behave as outside direct mode
+            # per-LED command (0x93) no longer does a full LED refresh; the main loop refreshes instead.
+            # 0x91/0x92 still refresh, via stubs in free space at 0x8048/0x8050.
+            img[0x8048:0x804E] = b"\x20\xB0\xAD\x4C\x70\x99"          # STUB1: JSR $ADB0 ; JMP $9970
+            img[0x8050:0x8058] = b"\xE8\xE8\x20\xB0\xAD\x4C\x70\x99"  # STUB2: INX INX ; JSR $ADB0 ; JMP $9970
+            img[0x9967:0x996A] = b"\x4C\x70\x99"                       # 0x93: JMP $9970 (skip refresh)
+            img[0x98AF:0x98B2] = b"\x4C\x48\x80"                       # 0x91: JMP STUB1
+            img[0x9915:0x9919] = b"\x4C\x50\x80\xEA"                   # 0x92: JMP STUB2 ; NOP
         img[0x8000:0x8004] = sum(img[0x8004:IMG_LEN]).to_bytes(4, "little")    # header checksum
     return img
 
@@ -61,7 +71,7 @@ def main() -> None:
 
     orig = raw[IMG_OFF:IMG_OFF + IMG_LEN]
     for out_name, version, fix in (("K596 FLASH original 1.04.exe", 0x0104, False),
-                                   ("K596 FLASH patch 1.06.exe", 0x0106, True)):
+                                   ("K596 FLASH patch 1.07.exe", 0x0107, True)):
         img = build_image(orig, version, fix)
         new_name = f"ET-8408-MA0850T-200317-1.00-{version:04X}-{name_checksum(img):04X}.hex".encode()
         out = bytearray(raw.replace(OLD_NAME, new_name))

@@ -23,7 +23,7 @@ OpenRGB device support consists of a low-level controller (USB I/O) and an `RGBC
    send a fill when most keys share a color, then only the keys that changed, within a time budget
    per `DeviceUpdateLEDs()` call.
 2. **White held keys on stock firmware 1.04.** Read back `0x13` periodically and repaint keys that
-   differ, or document that firmware 1.06 is recommended.
+   differ, or document that firmware 1.07 is recommended.
 3. **Model check.** Verify the firmware ID / version (USB `bcdDevice` 0x0104 or 0x0105) so other
    K596 hardware (Sonix, Sinowealth) is never driven with this protocol.
 4. **Wireless** (`062A:38B3`, interface 1, `0xFF41`) once [WIRELESS.md](WIRELESS.md) is resolved.

@@ -28,7 +28,7 @@
 | `0xCDA1` | in direct mode: paint every currently pressed key (`$17CA`..`$17D6` bitmap) white |
 | `0xE69C` | custom-mode palette (planar R / G / B tables) |
 
-## Patch (firmware 1.06)
+## Patch (firmware 1.07)
 
 ### 1. Held keys painted white
 
@@ -54,16 +54,36 @@ The indicator routine (`0xB00B`) computes Num/Caps/Scroll from the host's LED re
         EA EA     NOP NOP        ; patched: same behaviour as outside direct mode
 ```
 
+### 3. Per-LED refresh removed (speed)
+
+In direct mode the per-LED command (`0x93`, handler `0x9919`) stored the colour and then called
+the full-keyboard refresh `0xADB0` at the shared exit `0x9967`, so every key update rescanned all
+120 LEDs. The fill (`0x91`/`0x92`) share that exit and should keep refreshing, so the patch routes
+them through two stubs placed in free space (`0x8048`, `0x8050`) and makes only the `0x93` path skip
+the refresh. The main loop's own call to `0xADB0` (via `0xD418`) then paints the stored colours.
+
+```
+0x9967  20 B0 AD  JSR $ADB0  ->  4C 70 99  JMP $9970     ; 0x93 stores and skips refresh
+0x98AF  4C 67 99  JMP $9967  ->  4C 48 80  JMP $8048     ; 0x91 -> STUB1 (still refreshes)
+0x9915  E8 E8 80 4E (INX INX ; BRA $9967) -> 4C 50 80 EA  ; 0x92 -> STUB2 (still refreshes)
+0x8048  STUB1:  20 B0 AD 4C 70 99        ; JSR $ADB0 ; JMP $9970
+0x8050  STUB2:  E8 E8 20 B0 AD 4C 70 99  ; INX INX ; JSR $ADB0 ; JMP $9970
+```
+
 Changed bytes compared with 1.04:
 
-| Address | 1.04 | 1.06 | Reason |
+| Address | 1.04 | 1.07 | Reason |
 |---|---|---|---|
 | `0xCB5C` | `0D` | `2C` | held-key fix |
 | `0xB0D5` | `F0` | `80` | indicator fix |
 | `0xB105`-`0xB106` | `D0 0C` | `EA EA` | indicator fix |
+| `0x9967` | `20 B0 AD` | `4C 70 99` | speed: 0x93 skips refresh |
+| `0x98AF` | `4C 67 99` | `4C 48 80` | speed: 0x91 -> stub |
+| `0x9915` | `E8 E8 80 4E` | `4C 50 80 EA` | speed: 0x92 -> stub |
+| `0x8048`-`0x8057` | `FF...` | stubs | speed: refresh stubs |
 | `0x8040` | `34` ('4') | `36` ('6') | version string |
 | `0xDFBD` | `04` | `06` | USB `bcdDevice` |
-| `0x8000` | `95 17 2A 00` | `40 18 2A 00` | header checksum |
+| `0x8000` | `95 17 2A 00` | `CC 10 2A 00` | header checksum |
 
 ## Official software (Redragon Gaming Software 1.0.0.3)
 

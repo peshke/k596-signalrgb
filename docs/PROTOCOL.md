@@ -1,7 +1,7 @@
-# K596 USB protocol (wired, 062a:8519, firmware 1.04/1.06)
+# K596 USB protocol (wired, 062a:8519, firmware 1.04/1.07)
 
 Everything below was reverse engineered from USB captures of the official software and from a
-disassembly of the firmware. Tested on firmware 1.04 and the patched 1.05/1.06.
+disassembly of the firmware. Tested on firmware 1.04 and the patched 1.06/1.07.
 
 ## Device
 
@@ -17,10 +17,12 @@ Collection 6 (`0xFF19`, report `0x09`) is not used by the lighting code.
 
 ## Timing (important)
 
-The firmware keeps a single command buffer and processes roughly **one command every ~8 ms**.
-Commands sent before the previous one has been processed are silently lost. Always wait for the
-echo of a command before sending the next one. This limits per-key updates to about 130 LEDs/s
-(a full 101-LED frame takes ~775 ms).
+On **stock firmware (1.04-1.06)** every per-LED command (`0x93`) triggers a full 120-LED refresh,
+so the keyboard only accepts about one command every ~8 ms and a full frame takes ~775 ms (~1.3 fps).
+**Firmware 1.07** removes that per-LED refresh (the main loop refreshes instead), so `0x93` returns
+quickly: the keyboard keeps up at ~0.5 ms spacing, about 6 fps error-free for a full 92-key frame.
+Either way the firmware has no command queue, so a command sent too soon is dropped; the plugin
+reads the frame buffer (`0x13`) back each frame and re-sends only the LEDs that are wrong.
 
 ## Output report 0x08 - command table
 
@@ -43,7 +45,7 @@ Dispatcher at firmware `0x9762` (`$1075` = command byte = packet byte 1).
 | `A0` | `A0` | not analysed |
 
 Direct mode (`0x91`-`0x93`) is never used by the official software. On stock firmware 1.04 it
-paints any key that is held down white (see [FIRMWARE.md](FIRMWARE.md)); firmware 1.06 (patched)
+paints any key that is held down white (see [FIRMWARE.md](FIRMWARE.md)); firmware 1.07 (patched)
 removes that.
 
 ## Feature reports
@@ -58,7 +60,7 @@ removes that.
 | `0x15` | 107 | read | per-key palette table (custom mode), bytes 105-106 = checksum |
 | `0x16` | 2 | read | `01` = ready (polled by the software after writing `0x20`) |
 | `0x17` | 2 | read/write | flag |
-| `0x18` | 6 | write | direct mode only (stock firmware): the 5 indicator LEDs (Num, Caps, Scroll, 2 more), `0x80` = on. Ignored with firmware 1.06, which shows the real lock state |
+| `0x18` | 6 | write | direct mode only (stock firmware): the 5 indicator LEDs (Num, Caps, Scroll, 2 more), `0x80` = on. Ignored with firmware 1.07, which shows the real lock state |
 | `0x20` | 105 | write | per-key palette values (custom mode), inside the `21`/`22` bracket |
 | `0x05` | 135 | - | not analysed |
 | **`0x06`** | 8 | write | **firmware update unlock (8-step password). Never send this.** |

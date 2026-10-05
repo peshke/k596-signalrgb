@@ -8,6 +8,7 @@ Requires: Python 3, pip install hidapi. Close the Redragon software and SignalRG
   python k596_tool.py diff A B          compare two dumps
   python k596_tool.py fill RRGGBB       direct mode, fill all keys with one color
   python k596_tool.py rainbow           direct mode, per-key rainbow + speed measurement
+  python k596_tool.py speed             direct mode, measure the fastest accurate full-frame rate
   python k596_tool.py side              direct mode, light the 16 side-LED slots one by one
   python k596_tool.py exit              leave direct mode (back to onboard lighting)
 
@@ -40,6 +41,25 @@ def cmd(h, *b, timeout=0.05):
     pkt = [0x08] + list(b)
     h.write(pkt + [0] * (64 - len(pkt)))
     end = time.time() + timeout
+    while time.time() < end:
+        rep = h.read(64)
+        if rep and len(rep) > 1 and rep[0] == 0x08 and rep[1] == b[0]:
+            return True
+        time.sleep(0.0005)
+    return False
+
+
+def fast(h, *b):  # output report 0x08 without waiting
+    pkt = [0x08] + list(b)
+    h.write(pkt + [0] * (64 - len(pkt)))
+    while h.read(64):
+        pass
+
+
+def acked(h, *b, timeout=50):  # output report 0x08, wait for the echo
+    pkt = [0x08] + list(b)
+    h.write(pkt + [0] * (64 - len(pkt)))
+    end = time.time() + timeout / 1000
     while time.time() < end:
         rep = h.read(64)
         if rep and len(rep) > 1 and rep[0] == 0x08 and rep[1] == b[0]:
@@ -129,13 +149,40 @@ def side():
     h.close()
 
 
+def speed():
+    """Push random full frames as fast as the keyboard accepts them, verify against 0x13.
+    On firmware 1.07 (per-LED refresh removed) this is much higher than on 1.04/1.06."""
+    import random
+    h = connect()
+    cmd(h, 0x91)
+    time.sleep(0.05)
+    for gap in (None, 0.001, 0.0005, 0.0):
+        want = {i: (random.randrange(256), random.randrange(256), random.randrange(256)) for i in KEY_SLOTS}
+        t = time.time()
+        for i, (r, g, b) in want.items():
+            if gap is None:
+                acked(h, 0x93, (i - 1) // 13, (i - 1) % 13, 0, r, g, b)
+            else:
+                fast(h, 0x93, (i - 1) // 13, (i - 1) % 13, 0, r, g, b)
+                if gap:
+                    time.sleep(gap)
+        dt = time.time() - t
+        time.sleep(0.08)
+        rep = h.get_feature_report(0x13, 520)
+        bad = sum(1 for i, (r, g, b) in want.items() if (rep[i], rep[i + 104], rep[i + 208]) != (r, g, b))
+        label = "echo-wait" if gap is None else (f"{gap*1000:.1f}ms gap" if gap else "no gap")
+        print(f"  {label:10}: {dt*1000:5.0f} ms/frame ({1/dt:5.1f} fps)  wrong LEDs: {bad}")
+    cmd(h, 0x90)
+    h.close()
+
+
 def leave():
     h = connect()
     cmd(h, 0x90)
     h.close()
 
 
-COMMANDS = {"info": info, "dump": dump, "diff": diff, "fill": fill, "rainbow": rainbow, "side": side, "exit": leave}
+COMMANDS = {"info": info, "dump": dump, "diff": diff, "fill": fill, "rainbow": rainbow, "speed": speed, "side": side, "exit": leave}
 
 if __name__ == "__main__":
     if len(sys.argv) < 2 or sys.argv[1] not in COMMANDS:
