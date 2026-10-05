@@ -4,6 +4,7 @@
 //   08 92 00 00 00 R G B       fill all LEDs
 //   08 93 group col 00 R G B   one LED (group = (index-1)/13, col = (index-1)%13)
 //   08 90                      leave direct mode (back to onboard lighting)
+// Side lights: 08 93 FF n 00 R G B (n 0-7 left, 8-15 right, top to bottom).
 // The firmware handles about one command per ~8 ms, so each frame sends a fill when it helps
 // and then corrects the keys with the largest error, verified against the frame buffer (feature 0x13).
 // Nothing is written to flash.
@@ -23,6 +24,7 @@ shutdownColor:readonly
 LightingMode:readonly
 forcedColor:readonly
 updatesPerFrame:readonly
+sideLights:readonly
 */
 export function ControllableParameters() {
 	return [
@@ -30,6 +32,7 @@ export function ControllableParameters() {
 		{ property: "shutdownColor", group: "lighting", label: "Shutdown Color", type: "color", default: "#000000" },
 		{ property: "LightingMode", group: "lighting", label: "Lighting Mode", type: "combobox", values: ["Canvas", "Forced"], default: "Canvas" },
 		{ property: "forcedColor", group: "lighting", label: "Forced Color", type: "color", default: "#009bde" },
+		{ property: "sideLights", group: "lighting", label: "Side Lights", type: "combobox", values: ["Canvas", "Off"], default: "Canvas" },
 		{ property: "updatesPerFrame", group: "lighting", label: "Key updates per frame", type: "number", min: "1", max: "30", default: "6" },
 	];
 }
@@ -66,6 +69,45 @@ const vKeys = [
 	["G1", 0, 1, 26], ["G2", 0, 2, 39], ["G3", 0, 3, 52], ["G4", 0, 4, 65], ["G5", 0, 5, 78],
 ];
 
+// Side lights: 16 slots after the 104 key slots, set with 08 93 FF n 00 R G B.
+// Slots 0-7 = left side top to bottom, 8-15 = right side top to bottom.
+// Each side is its own subdevice, so it can be placed, resized or removed on the canvas.
+const SIDES = [
+	{ id: "K596LeftSide", name: "Left Side Light", base: 0 },
+	{ id: "K596RightSide", name: "Right Side Light", base: 8 },
+];
+let sidesActive = false;
+let sideState = new Array(16).fill(null).map(() => [0, 0, 0]); // cannot be read back: track what was sent
+
+function createSides() {
+	for (const s of SIDES) {
+		device.createSubdevice(s.id);
+		device.setSubdeviceName(s.id, s.name);
+		device.setSubdeviceSize(s.id, 1, 8);
+		device.setSubdeviceLeds(s.id, [...Array(8).keys()].map(n => `${s.name} ${n + 1}`), [...Array(8).keys()].map(n => [0, n]));
+	}
+	sidesActive = true;
+}
+
+function removeSides() {
+	for (const s of SIDES) { device.removeSubdevice(s.id); }
+	sidesActive = false; // Render turns them off (target black) within the normal update budget
+}
+
+export function onsideLightsChanged() {
+	if (sideLights === "Canvas" && !sidesActive) { createSides(); }
+	if (sideLights !== "Canvas" && sidesActive) { removeSides(); }
+}
+
+function setSide(n, c) {
+	cmd([0x93, 0xff, n, 0, c[0], c[1], c[2]]);
+	sideState[n] = c.slice();
+}
+
+// Unified list: keys (read back from the keyboard) + the 16 side lights (black while disabled)
+const vLeds = vKeys.map(k => ({ side: false, slot: k[3], x: k[1], y: k[2] }))
+	.concat(SIDES.flatMap(s => [...Array(8).keys()].map(n => ({ side: true, slot: s.base + n, sub: s.id, y: n }))));
+
 export function LedNames() { return vKeys.map(k => k[0]); }
 export function LedPositions() { return vKeys.map(k => [k[1], k[2]]); }
 
@@ -78,13 +120,22 @@ const MIN_ERROR = 12;      // ignore differences smaller than this (sum of |dR|+
 export function Initialize() {
 	device.set_endpoint(0, 0xff19, 0xff19, 0x0005);
 	cmd([0x91]);
+	cmd([0x92, 0, 0, 0, 0, 0, 0]); // known state: everything off, incl. side lights
+	sideState = sideState.map(() => [0, 0, 0]);
+	if (sideLights === "Canvas") { createSides(); }
 	device.log("K596 direct mode on");
 }
 
 export function Render() {
-	const want = vKeys.map(k => LightingMode === "Forced" ? hexToRgb(forcedColor) : device.color(k[1], k[2]));
-	const have = readFrame();
-	if (!have) { return; }
+	const want = vLeds.map(l => {
+		if (l.side && !sidesActive) { return [0, 0, 0]; }
+		if (LightingMode === "Forced") { return hexToRgb(forcedColor); }
+		return l.side ? device.subdeviceColor(l.sub, 0, l.y) : device.color(l.x, l.y);
+	});
+	const keys = readFrame();
+	if (!keys) { return; }
+	let k = 0;
+	const have = vLeds.map(l => (l.side ? sideState[l.slot] : keys[k++]));
 
 	let errNow = 0;
 	const sum = [0, 0, 0];
@@ -99,6 +150,7 @@ export function Render() {
 	if (errNow > MIN_ERROR * 4 && errFill < errNow * 0.5) {
 		cmd([0x92, 0, 0, 0, mean[0], mean[1], mean[2]]);
 		for (let i = 0; i < have.length; i++) { have[i] = mean; }
+		sideState = sideState.map(() => mean.slice()); // the fill also sets the side lights
 		budget--;
 	}
 
@@ -107,9 +159,14 @@ export function Render() {
 		.sort((a, b) => b[0] - a[0]);
 	for (let n = 0; n < order.length && n < budget; n++) {
 		const i = order[n][1];
-		const idx = vKeys[i][3] - 1;
+		const l = vLeds[i];
 		const c = want[i];
-		cmd([0x93, Math.floor(idx / 13), idx % 13, 0, c[0], c[1], c[2]]);
+		if (l.side) {
+			setSide(l.slot, c);
+		} else {
+			const idx = l.slot - 1;
+			cmd([0x93, Math.floor(idx / 13), idx % 13, 0, c[0], c[1], c[2]]);
+		}
 	}
 }
 

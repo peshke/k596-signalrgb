@@ -9,7 +9,7 @@ never uses. Plus a one-byte firmware fix and complete protocol documentation.
 | Feature | Status |
 |---|---|
 | SignalRGB per-key RGB (any color) | ✅ wired |
-| Side lights (16, left and right) | ✅ as separate LEDs in the layout |
+| Side lights (16, left and right) | ✅ as two separate canvas components, can be removed or switched off |
 | Smooth fades / solid colors | ✅ (one fill command per frame) |
 | Complex per-key effects | ✅ with limited speed (~130 key updates/s, firmware limit) |
 | No flash writes during effects | ✅ |
@@ -44,6 +44,7 @@ Device settings:
 |---|---|
 | Key updates per frame | per-key corrections per frame (default 6). Higher = faster catch-up, more time per frame |
 | Lighting Mode | Canvas / Forced color |
+| Side Lights | Canvas = left/right side lights as separate components on the canvas, Off = side lights dark |
 | On Shutdown | restore onboard lighting, or a fixed color |
 
 How it works: each frame the plugin reads the real LED colors back from the keyboard, sends one

@@ -39,7 +39,7 @@ Dispatcher at firmware `0x9762` (`$1075` = command byte = packet byte 1).
 | **`91`** | `91` | **enter direct mode** (effects stopped, frame buffer cleared) |
 | **`92`** | `92 00 00 00 R G B` | **fill** all LEDs with one RGB color (skips keys currently flagged as pressed) |
 | **`93`** | `93 group col 00 R G B` | **set one LED** to any RGB color, `group = (index-1)/13`, `col = (index-1)%13` |
-| `93` | `93 FF n 00 R G B` | set **side light** `n` (0-7 left side top to bottom, 8-15 right side top to bottom; LED outputs 104-119, not affected by the brightness setting) |
+| `93` | `93 FF n 00 R G B` | set **side light** `n` (0-7 left side top to bottom, 8-15 right side top to bottom; LED outputs 104-119, not affected by the brightness setting, not included in the `0x13` readback) |
 | `A0` | `A0` | not analysed |
 
 Direct mode (`0x91`-`0x93`) is never used by the official software. On stock firmware 1.04 it
