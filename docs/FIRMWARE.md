@@ -28,7 +28,9 @@
 | `0xCDA1` | in direct mode: paint every currently pressed key (`$17CA`..`$17D6` bitmap) white |
 | `0xE69C` | custom-mode palette (planar R / G / B tables) |
 
-## Patch (firmware 1.05)
+## Patch (firmware 1.06)
+
+### 1. Held keys painted white
 
 ```
 0xCB59  A5 3D     LDA $3D        ; direct mode flag
@@ -39,14 +41,29 @@
 `$CB6A` is a tail jump (`JMP $CDA1`, which ends in `RTS`), so branching straight to the function's
 own `RTS` at `$CB89` leaves the stack balanced. Outside direct mode nothing changes.
 
+### 2. Lock indicators off in direct mode
+
+The indicator routine (`0xB00B`) computes Num/Caps/Scroll from the host's LED report (`$10F3`) into
+`$16EA`-`$16EE`. In direct mode it then overwrites them with the 5 bytes of feature report `0x18`
+(`$16EF`), which nobody sends, so the indicators go dark.
+
+```
+0xB0D5  F0 1B     BEQ $B0F2      ; skip the 0x18 copy outside direct mode
+        80 1B     BRA $B0F2      ; patched: always skip it
+0xB105  D0 0C     BNE $B113      ; in direct mode, also drive indicators 3 and 4
+        EA EA     NOP NOP        ; patched: same behaviour as outside direct mode
+```
+
 Changed bytes compared with 1.04:
 
-| Address | 1.04 | 1.05 | Reason |
+| Address | 1.04 | 1.06 | Reason |
 |---|---|---|---|
-| `0xCB5C` | `0D` | `2C` | the fix |
-| `0x8040` | `34` ('4') | `35` ('5') | version string |
-| `0xDFBD` | `04` | `05` | USB `bcdDevice` |
-| `0x8000` | `95 17 2A 00` | `B6 17 2A 00` | header checksum |
+| `0xCB5C` | `0D` | `2C` | held-key fix |
+| `0xB0D5` | `F0` | `80` | indicator fix |
+| `0xB105`-`0xB106` | `D0 0C` | `EA EA` | indicator fix |
+| `0x8040` | `34` ('4') | `36` ('6') | version string |
+| `0xDFBD` | `04` | `06` | USB `bcdDevice` |
+| `0x8000` | `95 17 2A 00` | `40 18 2A 00` | header checksum |
 
 ## Official software (Redragon Gaming Software 1.0.0.3)
 

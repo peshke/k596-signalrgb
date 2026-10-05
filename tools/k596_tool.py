@@ -8,6 +8,7 @@ Requires: Python 3, pip install hidapi. Close the Redragon software and SignalRG
   python k596_tool.py diff A B          compare two dumps
   python k596_tool.py fill RRGGBB       direct mode, fill all keys with one color
   python k596_tool.py rainbow           direct mode, per-key rainbow + speed measurement
+  python k596_tool.py side              direct mode, light the 16 side-LED slots one by one
   python k596_tool.py exit              leave direct mode (back to onboard lighting)
 
 Never send feature report 0x06: it is the firmware-update unlock sequence.
@@ -112,13 +113,29 @@ def rainbow():
     h.close()
 
 
+def side():
+    """Side LEDs are 16 extra slots after the 104 key slots, set with 08 93 FF n 00 R G B."""
+    h = connect()
+    cmd(h, 0x91)
+    cmd(h, 0x92, 0, 0, 0, 0, 0, 0)  # everything off
+    for n in range(16):
+        for m in range(16):
+            cmd(h, 0x93, 0xFF, m, 0, *((255, 0, 0) if m == n else (0, 0, 0)))
+        input(f"side LED {n:2d} lit red - which light is it? (Enter for next) ")
+    for m in range(16):
+        cmd(h, 0x93, 0xFF, m, 0, 0, 0, 255)
+    input("all 16 side slots blue - Enter to exit direct mode ")
+    cmd(h, 0x90)
+    h.close()
+
+
 def leave():
     h = connect()
     cmd(h, 0x90)
     h.close()
 
 
-COMMANDS = {"info": info, "dump": dump, "diff": diff, "fill": fill, "rainbow": rainbow, "exit": leave}
+COMMANDS = {"info": info, "dump": dump, "diff": diff, "fill": fill, "rainbow": rainbow, "side": side, "exit": leave}
 
 if __name__ == "__main__":
     if len(sys.argv) < 2 or sys.argv[1] not in COMMANDS:

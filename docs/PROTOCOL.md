@@ -1,7 +1,7 @@
-# K596 USB protocol (wired, 062a:8519, firmware 1.04/1.05)
+# K596 USB protocol (wired, 062a:8519, firmware 1.04/1.06)
 
 Everything below was reverse engineered from USB captures of the official software and from a
-disassembly of the firmware. Tested on firmware 1.04 and the patched 1.05.
+disassembly of the firmware. Tested on firmware 1.04 and the patched 1.05/1.06.
 
 ## Device
 
@@ -39,11 +39,11 @@ Dispatcher at firmware `0x9762` (`$1075` = command byte = packet byte 1).
 | **`91`** | `91` | **enter direct mode** (effects stopped, frame buffer cleared) |
 | **`92`** | `92 00 00 00 R G B` | **fill** all LEDs with one RGB color (skips keys currently flagged as pressed) |
 | **`93`** | `93 group col 00 R G B` | **set one LED** to any RGB color, `group = (index-1)/13`, `col = (index-1)%13` |
-| `93` | `93 FF n 00 R G B` | set entry `n` (0-15) of an internal 16-color RGB table (purpose unknown) |
+| `93` | `93 FF n 00 R G B` | set **side light** `n` (0-7 left side top to bottom, 8-15 right side top to bottom; LED outputs 104-119, not affected by the brightness setting) |
 | `A0` | `A0` | not analysed |
 
 Direct mode (`0x91`-`0x93`) is never used by the official software. On stock firmware 1.04 it
-paints any key that is held down white (see [FIRMWARE.md](FIRMWARE.md)); firmware 1.05 (patched)
+paints any key that is held down white (see [FIRMWARE.md](FIRMWARE.md)); firmware 1.06 (patched)
 removes that.
 
 ## Feature reports
@@ -58,7 +58,7 @@ removes that.
 | `0x15` | 107 | read | per-key palette table (custom mode), bytes 105-106 = checksum |
 | `0x16` | 2 | read | `01` = ready (polled by the software after writing `0x20`) |
 | `0x17` | 2 | read/write | flag |
-| `0x18` | 6 | write | 5 bytes, purpose unknown |
+| `0x18` | 6 | write | direct mode only (stock firmware): the 5 indicator LEDs (Num, Caps, Scroll, 2 more), `0x80` = on. Ignored with firmware 1.06, which shows the real lock state |
 | `0x20` | 105 | write | per-key palette values (custom mode), inside the `21`/`22` bracket |
 | `0x05` | 135 | - | not analysed |
 | **`0x06`** | 8 | write | **firmware update unlock (8-step password). Never send this.** |

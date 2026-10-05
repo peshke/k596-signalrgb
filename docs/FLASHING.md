@@ -1,4 +1,4 @@
-# Flashing firmware 1.05
+# Flashing firmware 1.06
 
 Flashing firmware always carries a risk. This procedure was tested successfully on one keyboard,
 using Redragon's own flashing code (write + verify + reboot). You do this at your own risk.
@@ -29,7 +29,7 @@ version and verifies its own output, then writes two programs next to the origin
 | Program | Firmware |
 |---|---|
 | `K596 FLASH original 1.04.exe` | original 1.04, byte for byte (dry run / restore) |
-| `K596 FLASH patch 1.05.exe` | 1.05 = 1.04 + direct-mode key-press fix |
+| `K596 FLASH patch 1.06.exe` | 1.06 = 1.04 + direct-mode fixes (held keys, lock indicators) |
 
 Both always enable the UPDATE button. Windows may warn about an unknown program.
 
@@ -43,8 +43,8 @@ Both always enable the UPDATE button. Windows may warn about an unknown program.
 
 ## 3. Flash the patch
 
-Start `K596 FLASH patch 1.05.exe` and repeat the same steps. Afterwards the software shows
-`FW: 1.05`.
+Start `K596 FLASH patch 1.06.exe` and repeat the same steps. Afterwards the software shows
+`FW: 1.06`. Keyboards already on the earlier 1.05 patch can be updated the same way.
 
 ## Going back
 
@@ -52,6 +52,6 @@ Start `K596 FLASH patch 1.05.exe` and repeat the same steps. Afterwards the soft
 
 ## Notes
 
-* The original Redragon software will never flash anything on a 1.05 keyboard (its built-in
+* The original Redragon software will never flash anything on a patched keyboard (its built-in
   firmware is 1.04, which it considers older).
 * Never send HID feature report `0x06` to the keyboard yourself: it unlocks firmware download mode.

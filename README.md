@@ -9,10 +9,12 @@ never uses. Plus a one-byte firmware fix and complete protocol documentation.
 | Feature | Status |
 |---|---|
 | SignalRGB per-key RGB (any color) | ✅ wired |
+| Side lights (16, left and right) | ✅ as separate LEDs in the layout |
 | Smooth fades / solid colors | ✅ (one fill command per frame) |
 | Complex per-key effects | ✅ with limited speed (~130 key updates/s, firmware limit) |
 | No flash writes during effects | ✅ |
-| Held keys turning white in direct mode | fixed by firmware 1.05 (optional) |
+| Held keys turning white in direct mode | fixed by firmware 1.06 (optional) |
+| Num/Caps/Scroll Lock indicators off in direct mode | fixed by firmware 1.06 (optional) |
 | 2.4 GHz dongle | planned, see [docs/WIRELESS.md](docs/WIRELESS.md) |
 | OpenRGB | planned, see [docs/OPENRGB.md](docs/OPENRGB.md) |
 
@@ -47,11 +49,13 @@ Device settings:
 How it works: each frame the plugin reads the real LED colors back from the keyboard, sends one
 fill command when that gets the whole keyboard closer to the target, then corrects the keys with
 the largest error. On stock firmware 1.04, held keys flash white and are repainted after release;
-with firmware 1.05 they keep their color.
+with firmware 1.06 they keep their color. Stock firmware also turns the lock indicators off
+while SignalRGB is running; firmware 1.06 keeps them working.
 
-## Firmware 1.05 (optional)
+## Firmware 1.06 (optional)
 
-Removes the white painting of held keys in direct mode. Built locally from your own copy of the
+Fixes two stock-firmware behaviours in direct mode: held keys painted white, and the
+Num/Caps/Scroll Lock indicators switched off. Built locally from your own copy of the
 official software, nothing from Redragon is redistributed here. Read
 [docs/FLASHING.md](docs/FLASHING.md) before doing anything.
 
@@ -60,7 +64,7 @@ official software, nothing from Redragon is redistributed here. Read
 | Path | Content |
 |---|---|
 | `signalrgb/Redragon_K596_Vishnu.js` | SignalRGB plugin |
-| `tools/patch_software.py` | builds the flashing programs (original 1.04 / patched 1.05) from your official exe |
+| `tools/patch_software.py` | builds the flashing programs (original 1.04 / patched 1.06) from your official exe |
 | `tools/k596_tool.py` | diagnostics: settings, dumps, direct-mode fill / rainbow test |
 | `docs/PROTOCOL.md` | USB protocol, commands, reports, timing, LED map |
 | `captures/` | cleaned USB capture of the official software (Wireshark) + decoded request list |
