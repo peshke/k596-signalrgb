@@ -21,7 +21,7 @@ import time
 import hid
 
 VID, PID = 0x062A, 0x8519
-EMPTY_SLOTS = {91, 94, 104}
+EMPTY_SLOTS = {12, 13, 25, 38, 51, 64, 77, 90, 91, 94, 103, 104}  # no LED (see PROTOCOL.md)
 KEY_SLOTS = [i for i in range(1, 105) if i not in EMPTY_SLOTS]
 
 
@@ -54,18 +54,6 @@ def fast(h, *b):  # output report 0x08 without waiting
     h.write(pkt + [0] * (64 - len(pkt)))
     while h.read(64):
         pass
-
-
-def acked(h, *b, timeout=50):  # output report 0x08, wait for the echo
-    pkt = [0x08] + list(b)
-    h.write(pkt + [0] * (64 - len(pkt)))
-    end = time.time() + timeout / 1000
-    while time.time() < end:
-        rep = h.read(64)
-        if rep and len(rep) > 1 and rep[0] == 0x08 and rep[1] == b[0]:
-            return True
-        time.sleep(0.0005)
-    return False
 
 
 def led(h, index, r, g, b):
@@ -161,7 +149,7 @@ def speed():
         t = time.time()
         for i, (r, g, b) in want.items():
             if gap is None:
-                acked(h, 0x93, (i - 1) // 13, (i - 1) % 13, 0, r, g, b)
+                cmd(h, 0x93, (i - 1) // 13, (i - 1) % 13, 0, r, g, b)
             else:
                 fast(h, 0x93, (i - 1) // 13, (i - 1) % 13, 0, r, g, b)
                 if gap:

@@ -1,7 +1,8 @@
 # K596 USB protocol (wired, 062a:8519, firmware 1.04/1.07)
 
 Everything below was reverse engineered from USB captures of the official software and from a
-disassembly of the firmware. Tested on firmware 1.04 and the patched 1.06/1.07.
+disassembly of the firmware. Tested on stock firmware 1.04 and the patched 1.05/1.06/1.07
+(1.05 and 1.06 were earlier versions of the patch; use 1.07).
 
 ## Device
 
@@ -17,12 +18,13 @@ Collection 6 (`0xFF19`, report `0x09`) is not used by the lighting code.
 
 ## Timing (important)
 
-On **stock firmware (1.04-1.06)** every per-LED command (`0x93`) triggers a full 120-LED refresh,
+On **stock firmware 1.04** (and the earlier patches 1.05/1.06) every per-LED command (`0x93`) triggers a full 120-LED refresh,
 so the keyboard only accepts about one command every ~8 ms and a full frame takes ~775 ms (~1.3 fps).
 **Firmware 1.07** removes that per-LED refresh (the main loop refreshes instead), so `0x93` returns
 quickly: the keyboard keeps up at ~0.5 ms spacing, about 6 fps error-free for a full 92-key frame.
-Either way the firmware has no command queue, so a command sent too soon is dropped; the plugin
-reads the frame buffer (`0x13`) back each frame and re-sends only the LEDs that are wrong.
+Either way the firmware has no command queue, so a command sent too soon is dropped. The plugin
+waits for each command's echo and sends only the LEDs whose color changed; the frame buffer
+(`0x13`) readback is not reliable enough to decide what to resend.
 
 ## Output report 0x08 - command table
 
@@ -90,7 +92,8 @@ Direct mode replaces all of this and supports full RGB.
 
 ## LED index map
 
-Indices 91, 94, 104 have no LED. `group`/`col` are the values used by command `0x93`.
+92 keys. Indices 12, 13, 25, 38, 51, 64, 77, 90, 91, 94, 103 and 104 have no LED.
+`group`/`col` are the values used by command `0x93`.
 
 | Index | Group | Col | Key |
 |---|---|---|---|

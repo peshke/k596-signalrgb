@@ -62,6 +62,10 @@ the full-keyboard refresh `0xADB0` at the shared exit `0x9967`, so every key upd
 them through two stubs placed in free space (`0x8048`, `0x8050`) and makes only the `0x93` path skip
 the refresh. The main loop's own call to `0xADB0` (via `0xD418`) then paints the stored colours.
 
+All three paths continue at `0x9970` instead of `0x996A`. That is equivalent: in 1.04 the byte at
+`0x996A` is `80 04` (`BRA $9970`), and `0x996C`-`0x996F` (`LDA #$40 ; BRA $9972`) is the separate
+error-status path, reached from elsewhere. `0x9970` (`LDA #$02`) is the success status.
+
 ```
 0x9967  20 B0 AD  JSR $ADB0  ->  4C 70 99  JMP $9970     ; 0x93 stores and skips refresh
 0x98AF  4C 67 99  JMP $9967  ->  4C 48 80  JMP $8048     ; 0x91 -> STUB1 (still refreshes)
@@ -81,8 +85,8 @@ Changed bytes compared with 1.04:
 | `0x98AF` | `4C 67 99` | `4C 48 80` | speed: 0x91 -> stub |
 | `0x9915` | `E8 E8 80 4E` | `4C 50 80 EA` | speed: 0x92 -> stub |
 | `0x8048`-`0x8057` | `FF...` | stubs | speed: refresh stubs |
-| `0x8040` | `34` ('4') | `36` ('6') | version string |
-| `0xDFBD` | `04` | `06` | USB `bcdDevice` |
+| `0x8040` | `34` ('4') | `37` ('7') | version string |
+| `0xDFBD` | `04` | `07` | USB `bcdDevice` |
 | `0x8000` | `95 17 2A 00` | `CC 10 2A 00` | header checksum |
 
 ## Official software (Redragon Gaming Software 1.0.0.3)

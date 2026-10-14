@@ -22,9 +22,9 @@ OpenRGB device support consists of a low-level controller (USB I/O) and an `RGBC
    ~1.3 fps. Port the plugin's approach: track what was last sent (or read back feature `0x13`),
    send a fill when most keys share a color, then only the keys that changed, within a time budget
    per `DeviceUpdateLEDs()` call.
-2. **White held keys on stock firmware 1.04.** Read back `0x13` periodically and repaint keys that
-   differ, or document that firmware 1.07 is recommended.
-3. **Model check.** Verify the firmware ID / version (USB `bcdDevice` 0x0104 or 0x0105) so other
+2. **White held keys on stock firmware 1.04.** Document that firmware 1.07 is recommended (the
+   `0x13` readback does not reliably show which writes landed, so repainting from it is unreliable).
+3. **Model check.** Verify the firmware ID / version (USB `bcdDevice` 0x0104 stock, 0x0105-0x0107 patched) so other
    K596 hardware (Sonix, Sinowealth) is never driven with this protocol.
 4. **Wireless** (`062A:38B3`, interface 1, `0xFF41`) once [WIRELESS.md](WIRELESS.md) is resolved.
 
