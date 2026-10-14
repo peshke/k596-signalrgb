@@ -8,7 +8,8 @@
 // Each command is echo-confirmed before the next is sent, so nothing is dropped on either stock or
 // patched firmware; the plugin sends only the keys whose colour changed. Stock firmware runs a full
 // LED refresh on every per-key command (~8 ms each, so fast full-screen effects are limited);
-// firmware 1.07 removes that refresh and is several times faster. Nothing is written to flash.
+// firmware 1.07 removes that refresh and is several times faster. "Key updates per frame" = Auto
+// times a few commands at start-up and picks the budget to match. Nothing is written to flash.
 
 export function Name() { return "Redragon K596 Vishnu"; }
 export function VendorId() { return 0x062a; }
@@ -34,7 +35,7 @@ export function ControllableParameters() {
 		{ property: "LightingMode", group: "lighting", label: "Lighting Mode", type: "combobox", values: ["Canvas", "Forced"], default: "Canvas" },
 		{ property: "forcedColor", group: "lighting", label: "Forced Color", type: "color", default: "#009bde" },
 		{ property: "sideLights", group: "lighting", label: "Side Lights", type: "combobox", values: ["On", "Off"], default: "On" },
-		{ property: "updatesPerFrame", group: "lighting", label: "Key updates per frame", type: "number", min: "1", max: "120", default: "40" },
+		{ property: "updatesPerFrame", group: "lighting", label: "Key updates per frame", type: "combobox", values: ["Auto", "6", "10", "20", "40", "80", "120"], default: "Auto" },
 	];
 }
 
@@ -87,6 +88,15 @@ const SCRUB_PER_FRAME = 2;     // keys re-asserted per frame as insurance (invis
 let lastSent = null;           // shadow of the last colour sent per LED (null = unknown)
 let scrubPos = 0;
 
+// "Auto" key budget: Initialize times a few per-key commands. Stock firmware takes ~8 ms each (full
+// LED refresh per command), 1.07 ~1-2 ms. The firmware version itself is not readable from a plugin
+// (getHidInfo() only has report lengths, report 0x10 is a fixed layout table).
+const PROBE_COUNT = 16;
+const PROBE_STOCK_MS = 4;      // average above this = stock firmware
+const BUDGET_FAST = 40;        // firmware 1.07
+const BUDGET_STOCK = 6;        // stock firmware: ~50 ms of commands per frame
+let autoBudget = BUDGET_STOCK;
+
 export function Validate(endpoint) {
 	return endpoint.interface === 0 && endpoint.usage_page === 0xff19 && endpoint.collection === 0x0005;
 }
@@ -97,7 +107,22 @@ export function Initialize() {
 	cmd([0x92, 0, 0, 0, 0, 0, 0]); // known state: everything off
 	lastSent = vLeds.map(() => [0, 0, 0]); // matches the black fill above
 	scrubPos = 0;
+	autoBudget = probeBudget();
 	device.log("K596 direct mode on");
+}
+
+// Repaint the first keys black (they already are, so nothing visible) and time the echoes.
+function probeBudget() {
+	const start = Date.now();
+	let acked = 0;
+	for (let n = 0; n < PROBE_COUNT; n++) {
+		if (cmd([0x93, Math.floor(n / 13), n % 13, 0, 0, 0, 0])) { acked++; }
+	}
+	const ms = (Date.now() - start) / PROBE_COUNT;
+	const fast = acked === PROBE_COUNT && ms < PROBE_STOCK_MS;
+	device.log(`K596 probe: ${ms.toFixed(1)} ms/command, ${acked}/${PROBE_COUNT} acked -> ` +
+		(fast ? `firmware 1.07, auto budget ${BUDGET_FAST}` : `stock firmware, auto budget ${BUDGET_STOCK}`));
+	return fast ? BUDGET_FAST : BUDGET_STOCK;
 }
 
 export function Render() {
@@ -109,7 +134,7 @@ export function Render() {
 		return device.color(l.x, l.y);
 	});
 
-	let budget = Math.max(1, Number(updatesPerFrame));
+	let budget = updatesPerFrame === "Auto" ? autoBudget : Math.max(1, Number(updatesPerFrame) || BUDGET_STOCK);
 
 	// Near-uniform KEYS (e.g. a solid colour): one fill paints all keys in a single packet, so a
 	// solid-colour change is instant with no visible per-key sweep. The fill (0x92) also sets the 16
@@ -174,16 +199,17 @@ export function Shutdown(SystemSuspending) {
 
 // ---------- protocol ----------
 
-// Mode / fill / exit: send and wait for the echo (the firmware drops a command sent before it
-// finished the previous one).
+// Send and wait for the echo (the firmware drops a command sent before it finished the previous
+// one). Returns true if the echo arrived.
 function cmd(bytes) {
 	const pkt = [0x08].concat(bytes);
 	while (pkt.length < 64) { pkt.push(0); }
 	device.write(pkt, 64);
 	for (let t = 0; t < 4; t++) {
 		const r = device.read([0x08], 64, 10);
-		if (r && r.length > 1 && ((r[0] === 0x08 && r[1] === bytes[0]) || r[0] === bytes[0])) { return; }
+		if (r && r.length > 1 && ((r[0] === 0x08 && r[1] === bytes[0]) || r[0] === bytes[0])) { return true; }
 	}
+	return false;
 }
 
 

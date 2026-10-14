@@ -10,7 +10,8 @@ never uses. Plus a one-byte firmware fix and complete protocol documentation.
 |---|---|
 | SignalRGB per-key RGB (any color) | ✅ wired |
 | Side lights (16, left and right) | ✅ in the layout (left/right columns), can be switched off |
-| Smooth fades / solid colors | ✅ (one fill command per frame) |
+| Smooth fades / solid colors | ✅ (one fill command when the keys are near-uniform) |
+| Static scenes (e.g. a game HP bar) | ✅ nothing is resent while the picture doesn't change |
 | Complex per-key effects | ✅ with limited speed (~130 key updates/s, firmware limit) |
 | No flash writes during effects | ✅ |
 | Held keys turning white in direct mode | fixed by firmware 1.07 (optional) |
@@ -43,15 +44,17 @@ Device settings:
 
 | Setting | Meaning |
 |---|---|
-| Key updates per frame | per-key corrections per frame (default 6). Higher = faster catch-up, more time per frame |
+| Key updates per frame | per-key updates sent per frame. **Auto** (default) measures the firmware at start-up: 40 on firmware 1.07, 6 on stock. Higher = faster effects, more time per frame |
 | Lighting Mode | Canvas / Forced color |
 | Side Lights | On = left/right side lights follow the canvas, Off = side lights dark |
 | On Shutdown | restore onboard lighting, or a fixed color |
 
-How it works: each frame the plugin reads the real LED colors back from the keyboard, sends one
-fill command when that gets the whole keyboard closer to the target, then corrects the keys with
-the largest error. On stock firmware 1.04, held keys flash white and are repainted after release;
-with firmware 1.07 they keep their color. Stock firmware also turns the lock indicators off
+How it works: the plugin remembers the color it last sent to every LED and each frame sends only
+the LEDs whose target changed, biggest change first. Every command waits for the keyboard's echo,
+so nothing is dropped and static content never "reloads". When the keys are close to one color,
+a single fill command paints them all at once. On start-up it times a few commands (stock firmware
+takes ~8 ms per key, 1.07 ~1-2 ms) to pick the Auto budget; the result is in the device console.
+On stock firmware 1.04, held keys flash white; with firmware 1.07 they keep their color. Stock firmware also turns the lock indicators off
 while SignalRGB is running; firmware 1.07 keeps them working.
 
 ## Firmware 1.07 (optional)
