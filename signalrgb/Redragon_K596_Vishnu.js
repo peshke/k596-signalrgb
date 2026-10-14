@@ -14,7 +14,7 @@
 export function Name() { return "Redragon K596 Vishnu"; }
 export function VendorId() { return 0x062a; }
 export function ProductId() { return 0x8519; }
-export function Publisher() { return "Custom"; }
+export function Publisher() { return "peshke"; }
 export function Size() { return [21, 8]; }
 export function DefaultPosition() { return [10, 100]; }
 export function DefaultScale() { return 8.0; }
@@ -84,7 +84,7 @@ export function LedPositions() { return vLeds.map(l => [l.x, l.y]); }
 // firmware and the shadow stays accurate - static content therefore sends nothing and never
 // "reloads". A near-uniform target is painted with a single fill packet (instant, no sweep).
 const CHANGE_THRESHOLD = 10;   // treat a colour as changed if any channel moves more than this
-const SCRUB_PER_FRAME = 2;     // keys re-asserted per frame as insurance (invisible: same colour)
+const SCRUB_PER_FRAME = 2;     // LEDs re-sent every frame as insurance (usually same colour)
 let lastSent = null;           // shadow of the last colour sent per LED (null = unknown)
 let scrubPos = 0;
 
@@ -166,24 +166,27 @@ export function Render() {
 	todo.sort((a, b) => dist(want[b], lastSent[b]) - dist(want[a], lastSent[a]));
 	for (let n = 0; n < todo.length && n < budget; n++) { sendLed(todo[n], want[todo[n]]); }
 
-	// Insurance scrub: re-assert a couple of keys per frame to their true target. With reliable
-	// writes these are same-colour (invisible); they only act if a write ever silently failed.
+	// Insurance scrub: always re-send a couple of LEDs per frame, cycling through all of them. Usually
+	// same-colour (invisible); it repaints anything the keyboard changed on its own, e.g. a held key
+	// painted white by stock firmware, which lastSent cannot know about.
 	for (let sc = 0; sc < SCRUB_PER_FRAME; sc++) {
 		const i = scrubPos;
 		scrubPos = (scrubPos + 1) % want.length;
-		if (dist(want[i], lastSent[i]) > 0) { sendLed(i, want[i]); }
+		sendLed(i, want[i]);
 	}
 }
 
+// lastSent is only updated once the keyboard echoes the command, so a missed write is retried.
 function sendLed(i, c) {
 	const l = vLeds[i];
+	let ok;
 	if (l.side) {
-		cmd([0x93, 0xff, l.slot, 0, c[0], c[1], c[2]]);
+		ok = cmd([0x93, 0xff, l.slot, 0, c[0], c[1], c[2]]);
 	} else {
 		const idx = l.slot - 1;
-		cmd([0x93, Math.floor(idx / 13), idx % 13, 0, c[0], c[1], c[2]]);
+		ok = cmd([0x93, Math.floor(idx / 13), idx % 13, 0, c[0], c[1], c[2]]);
 	}
-	lastSent[i] = c.slice();
+	if (ok) { lastSent[i] = c.slice(); }
 }
 
 export function Shutdown(SystemSuspending) {
@@ -224,4 +227,4 @@ function hexToRgb(hex) {
 	return r ? [parseInt(r[1], 16), parseInt(r[2], 16), parseInt(r[3], 16)] : [0, 0, 0];
 }
 
-export function ImageUrl() { return ""; }
+export function ImageUrl() { return "https://raw.githubusercontent.com/peshke/k596-signalrgb/main/signalrgb/k596-rgb.jpeg"; }
