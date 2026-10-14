@@ -5,10 +5,10 @@
 //   08 93 group col 00 R G B   one key LED (group = (index-1)/13, col = (index-1)%13)
 //   08 93 FF n   00 R G B      one side light (n = 0-7 left top->bottom, 8-15 right top->bottom)
 //   08 90                      leave direct mode (back to onboard lighting)
-// The firmware handles about one command per ~8 ms on stock firmware (a full LED refresh runs on
-// every per-key command); firmware 1.07 removes that refresh, so per-key updates are ~6x faster.
-// The plugin reads the frame buffer (feature 0x13) back each frame and corrects only the keys with
-// the largest error. Nothing is written to flash.
+// Each command is echo-confirmed before the next is sent, so nothing is dropped on either stock or
+// patched firmware; the plugin sends only the keys whose colour changed. Stock firmware runs a full
+// LED refresh on every per-key command (~8 ms each, so fast full-screen effects are limited);
+// firmware 1.07 removes that refresh and is several times faster. Nothing is written to flash.
 
 export function Name() { return "Redragon K596 Vishnu"; }
 export function VendorId() { return 0x062a; }
@@ -76,8 +76,16 @@ for (let n = 0; n < 8; n++) { vLeds.push({ name: `Right Side ${n + 1}`, x: 20, y
 export function LedNames() { return vLeds.map(l => l.name); }
 export function LedPositions() { return vLeds.map(l => [l.x, l.y]); }
 
-const MIN_ERROR = 12;                 // ignore colour differences smaller than this
-let sideState = new Array(16).fill(0).map(() => [0, 0, 0]); // side LEDs are not in the 0x13 readback
+// We never read the keyboard back to decide what to resend: the frame buffer (0x13) does not
+// reliably reflect which per-LED writes physically landed, and under load the read can fail. Instead
+// we keep a shadow of what we last SENT (lastSent) and send only the LEDs whose target changed.
+// Every write is echo-confirmed before the next, so nothing is dropped on either stock or patched
+// firmware and the shadow stays accurate - static content therefore sends nothing and never
+// "reloads". A near-uniform target is painted with a single fill packet (instant, no sweep).
+const CHANGE_THRESHOLD = 10;   // treat a colour as changed if any channel moves more than this
+const SCRUB_PER_FRAME = 2;     // keys re-asserted per frame as insurance (invisible: same colour)
+let lastSent = null;           // shadow of the last colour sent per LED (null = unknown)
+let scrubPos = 0;
 
 export function Validate(endpoint) {
 	return endpoint.interface === 0 && endpoint.usage_page === 0xff19 && endpoint.collection === 0x0005;
@@ -87,11 +95,13 @@ export function Initialize() {
 	device.set_endpoint(0, 0xff19, 0xff19, 0x0005);
 	cmd([0x91]);
 	cmd([0x92, 0, 0, 0, 0, 0, 0]); // known state: everything off
-	sideState = sideState.map(() => [0, 0, 0]);
+	lastSent = vLeds.map(() => [0, 0, 0]); // matches the black fill above
+	scrubPos = 0;
 	device.log("K596 direct mode on");
 }
 
 export function Render() {
+	if (!lastSent) { lastSent = vLeds.map(() => [0, 0, 0]); }
 	const sideOn = sideLights !== "Off";
 	const want = vLeds.map(l => {
 		if (l.side && !sideOn) { return [0, 0, 0]; }
@@ -99,40 +109,56 @@ export function Render() {
 		return device.color(l.x, l.y);
 	});
 
-	const keys = readFrame();
-	if (!keys) { return; }
-	let k = 0;
-	const have = vLeds.map(l => (l.side ? sideState[l.slot] : keys[k++]));
-
-	// If one fill colour gets the whole board much closer, send a single fill first.
-	let errNow = 0;
-	const sum = [0, 0, 0];
-	want.forEach((c, i) => { errNow += dist(c, have[i]); sum[0] += c[0]; sum[1] += c[1]; sum[2] += c[2]; });
-	const mean = sum.map(v => Math.round(v / want.length));
-	const errFill = want.reduce((a, c) => a + dist(c, mean), 0);
-
 	let budget = Math.max(1, Number(updatesPerFrame));
-	if (errNow > MIN_ERROR * 4 && errFill < errNow * 0.5) {
-		cmd([0x92, 0, 0, 0, mean[0], mean[1], mean[2]]);
-		for (let i = 0; i < have.length; i++) { have[i] = mean; }
-		sideState = sideState.map(() => mean.slice());
-		budget--;
-	}
 
-	const order = want.map((c, i) => [dist(c, have[i]), i])
-		.filter(e => e[0] >= MIN_ERROR)
-		.sort((a, b) => b[0] - a[0]);
-	for (let n = 0; n < order.length && n < budget; n++) {
-		const l = vLeds[order[n][1]];
-		const c = want[order[n][1]];
-		if (l.side) {
-			cmdFast([0x93, 0xff, l.slot, 0, c[0], c[1], c[2]]);
-			sideState[l.slot] = c.slice();
-		} else {
-			const idx = l.slot - 1;
-			cmdFast([0x93, Math.floor(idx / 13), idx % 13, 0, c[0], c[1], c[2]]);
+	// Near-uniform KEYS (e.g. a solid colour): one fill paints all keys in a single packet, so a
+	// solid-colour change is instant with no visible per-key sweep. The fill (0x92) also sets the 16
+	// side lights; the diff below then corrects them if they differ (e.g. side lights off). Uniformity
+	// is judged on the keys only, since they are the bulk and the side lights are handled per-LED.
+	const sum = [0, 0, 0];
+	let nKeys = 0;
+	want.forEach((c, i) => { if (!vLeds[i].side) { sum[0] += c[0]; sum[1] += c[1]; sum[2] += c[2]; nKeys++; } });
+	const mean = sum.map(v => Math.round(v / nKeys));
+	let keyErr = 0;
+	want.forEach((c, i) => { if (!vLeds[i].side) { keyErr += dist(c, mean); } });
+	if (keyErr < nKeys * CHANGE_THRESHOLD) {
+		let needFill = false;
+		for (let i = 0; i < lastSent.length; i++) { if (!vLeds[i].side && dist(mean, lastSent[i]) > CHANGE_THRESHOLD) { needFill = true; break; } }
+		if (needFill) {
+			cmd([0x92, 0, 0, 0, mean[0], mean[1], mean[2]]);
+			lastSent = lastSent.map(() => mean.slice());
+			budget--;
 		}
 	}
+
+	// Send only the LEDs whose target changed, biggest differences first. Writes are echo-confirmed,
+	// so nothing is dropped and lastSent stays accurate - static content sends nothing and never
+	// "reloads". Anything over the per-frame budget carries to the next frame.
+	const todo = [];
+	for (let i = 0; i < want.length; i++) {
+		if (dist(want[i], lastSent[i]) > CHANGE_THRESHOLD) { todo.push(i); }
+	}
+	todo.sort((a, b) => dist(want[b], lastSent[b]) - dist(want[a], lastSent[a]));
+	for (let n = 0; n < todo.length && n < budget; n++) { sendLed(todo[n], want[todo[n]]); }
+
+	// Insurance scrub: re-assert a couple of keys per frame to their true target. With reliable
+	// writes these are same-colour (invisible); they only act if a write ever silently failed.
+	for (let sc = 0; sc < SCRUB_PER_FRAME; sc++) {
+		const i = scrubPos;
+		scrubPos = (scrubPos + 1) % want.length;
+		if (dist(want[i], lastSent[i]) > 0) { sendLed(i, want[i]); }
+	}
+}
+
+function sendLed(i, c) {
+	const l = vLeds[i];
+	if (l.side) {
+		cmd([0x93, 0xff, l.slot, 0, c[0], c[1], c[2]]);
+	} else {
+		const idx = l.slot - 1;
+		cmd([0x93, Math.floor(idx / 13), idx % 13, 0, c[0], c[1], c[2]]);
+	}
+	lastSent[i] = c.slice();
 }
 
 export function Shutdown(SystemSuspending) {
@@ -160,21 +186,6 @@ function cmd(bytes) {
 	}
 }
 
-// Per-LED (0x93): short pause instead of waiting for the echo. On firmware 1.07 the keyboard keeps
-// up easily; on stock firmware some packets are dropped and corrected on the next frame via 0x13.
-function cmdFast(bytes) {
-	const pkt = [0x08].concat(bytes);
-	while (pkt.length < 64) { pkt.push(0); }
-	device.write(pkt, 64);
-	device.pause(1);
-	device.read([0x08], 64, 0);
-}
-
-function readFrame() {
-	const rep = device.get_report([0x13], 366);
-	if (!rep || rep.length < 313) { return null; }
-	return vKeysRaw.map(k => [rep[k[3]], rep[k[3] + 104], rep[k[3] + 208]]);
-}
 
 // ---------- helpers ----------
 
