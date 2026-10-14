@@ -71,6 +71,7 @@ official software, nothing from Redragon is redistributed here. Read
 | Path | Content |
 |---|---|
 | `signalrgb/Redragon_K596_Vishnu.js` | SignalRGB plugin |
+| `signalrgb/k596-rgb.jpeg` | device picture used by the plugin |
 | `tools/patch_software.py` | builds the flashing programs (original 1.04 / patched 1.07) from your official exe |
 | `tools/k596_tool.py` | diagnostics: settings, dumps, direct-mode fill / rainbow test |
 | `docs/PROTOCOL.md` | USB protocol, commands, reports, timing, LED map |
@@ -95,4 +96,6 @@ official software, nothing from Redragon is redistributed here. Read
 ## License
 
 Code and documentation: MIT, see [LICENSE](LICENSE). Redragon software and firmware are not
-included and remain the property of their owners. Not affiliated with Redragon or SignalRGB.
+included and remain the property of their owners. The keyboard picture
+(`signalrgb/k596-rgb.jpeg`, shown in SignalRGB) is Redragon's product image and is not covered by
+the MIT license. Not affiliated with Redragon or SignalRGB.
